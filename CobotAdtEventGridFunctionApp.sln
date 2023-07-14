@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CobotAdtEventGridFunctionApp", "CobotAdtEventGridFunctionApp\CobotAdtEventGridFunctionApp.csproj", "{FB56687A-4F80-4ECA-A5B7-3B5800959C11}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB56687A-4F80-4ECA-A5B7-3B5800959C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB56687A-4F80-4ECA-A5B7-3B5800959C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB56687A-4F80-4ECA-A5B7-3B5800959C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB56687A-4F80-4ECA-A5B7-3B5800959C11}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE7CCA6F-9D65-4C36-8783-B285815AF1E7}
+	EndGlobalSection
+EndGlobal
