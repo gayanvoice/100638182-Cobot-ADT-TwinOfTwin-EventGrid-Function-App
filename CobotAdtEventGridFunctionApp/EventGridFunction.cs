@@ -8,6 +8,8 @@ using Azure.Identity;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using CobotADTEventGridFunctionApp.Model;
+using System.Collections.Generic;
 
 namespace CobotADTEventGridFunctionApp
 {
@@ -15,8 +17,8 @@ namespace CobotADTEventGridFunctionApp
     {
         private static readonly string adtInstanceUrl = Environment.GetEnvironmentVariable("ADT_SERVICE_URL");
 
-        [FunctionName("ProcessADTRoutedData")]
-        public static async Task RunAsync([EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
+        [FunctionName("RunEventGridTrigger")]
+        public static void Run([EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
         {
             DefaultAzureCredential cred = new DefaultAzureCredential();
             DigitalTwinsClient client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred);
@@ -24,31 +26,24 @@ namespace CobotADTEventGridFunctionApp
             log.LogInformation(eventGridEvent.Data.ToString());
             if (eventGridEvent != null && eventGridEvent.Data != null)
             {
-                JObject eventGridMessage = (JObject) JsonConvert.DeserializeObject(eventGridEvent.Data.ToString());
+                JObject eventGridMessage = (JObject)JsonConvert.DeserializeObject(eventGridEvent.Data.ToString());
+                RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(eventGridEvent.Data.ToString());
+                log.LogInformation("rootObject" + JsonConvert.SerializeObject(rootObject, Formatting.Indented));
+
                 Azure.JsonPatchDocument jsonPatchDocument = new Azure.JsonPatchDocument();
-                string deviceId = (string)eventGridMessage["systemProperties"]["iothub-connection-device-id"];
+                string deviceId = (string) eventGridMessage["systemProperties"]["iothub-connection-device-id"];
                 string twinDeviceId = deviceId;
                 switch (deviceId)
                 {
                     case "Cobot":
                         twinDeviceId = "TCobot";
-                        double cobotElapsedTime = (double) eventGridMessage["body"]["ElapsedTime"];
-                        jsonPatchDocument.AppendReplace("/ElapsedTime", cobotElapsedTime);
-                        log.LogInformation("executed cobot " + cobotElapsedTime);
+                        Patch patch = rootObject.Data.Patch.Find(patch => patch.Path.Contains("/ElapsedTime"));
+                        jsonPatchDocument.AppendReplace("/ElapsedTime", patch.Value);
+                        log.LogInformation("executed cobot" + deviceId + patch.Value);
                         break;
                     default:
                         break;
                 }
-                log.LogInformation($"JsonPatchDocument: {jsonPatchDocument}");
-                await client.UpdateDigitalTwinAsync(twinDeviceId, jsonPatchDocument);
-
-                log.LogInformation($"Updating Floor...");
-
-                string twinId = eventGridEvent.Subject.ToString();
-                log.LogInformation($"TwinId: {twinId}");
-
-                string modelId = eventGridMessage["data"]["modelId"].ToString();
-                log.LogInformation($"ModelId: {modelId}");
             }
         }
     }
