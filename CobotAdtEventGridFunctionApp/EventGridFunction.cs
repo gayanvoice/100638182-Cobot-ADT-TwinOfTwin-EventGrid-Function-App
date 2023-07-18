@@ -26,20 +26,25 @@ namespace CobotADTEventGridFunctionApp
             log.LogInformation(eventGridEvent.Data.ToString());
             if (eventGridEvent != null && eventGridEvent.Data != null)
             {
-                JObject eventGridMessage = (JObject)JsonConvert.DeserializeObject(eventGridEvent.Data.ToString());
                 RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(eventGridEvent.Data.ToString());
                 log.LogInformation("rootObject" + JsonConvert.SerializeObject(rootObject, Formatting.Indented));
-
                 Azure.JsonPatchDocument jsonPatchDocument = new Azure.JsonPatchDocument();
-                string deviceId = (string)eventGridMessage["systemProperties"]["iothub-connection-device-id"];
-                string twinDeviceId = deviceId;
-                switch (deviceId)
+                switch (rootObject.Data.ModelId)
                 {
-                    case "Cobot":
-                        twinDeviceId = "TCobot";
-                        Patch patch = rootObject.Data.Patch.Find(patch => patch.Path.Contains("/ElapsedTime"));
-                        jsonPatchDocument.AppendReplace("/ElapsedTime", patch.Value);
-                        log.LogInformation("executed cobot" + deviceId + patch.Value);
+                    case "dtmi:com:Cobot:Cobot;1":
+                        jsonPatchDocument.AppendReplace("/ElapsedTime", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/ElapsedTime")).Value);
+                        await client.UpdateDigitalTwinAsync("TCobot", jsonPatchDocument);
+                        break;
+                    case "dtmi:com:Cobot:Payload;1":
+                        jsonPatchDocument.AppendReplace("/Mass", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/Mass")).Value);
+                        jsonPatchDocument.AppendReplace("/CogX", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogX")).Value);
+                        jsonPatchDocument.AppendReplace("/CogY", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogY")).Value);
+                        jsonPatchDocument.AppendReplace("/CogZ", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogZ")).Value);
+                        await client.UpdateDigitalTwinAsync("TPayload", jsonPatchDocument);
+                        break;
+                    case "dtmi:com:Cobot:ControlBox;1":
+                        jsonPatchDocument.AppendReplace("/Voltage", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/Voltage")).Value);
+                        await client.UpdateDigitalTwinAsync("TControlBox", jsonPatchDocument);
                         break;
                     default:
                         break;
