@@ -15,7 +15,7 @@ namespace CobotADTEventGridFunctionApp
     {
         private static readonly string adtInstanceUrl = Environment.GetEnvironmentVariable("ADT_SERVICE_URL");
 
-        [FunctionName("RunEventGridTrigger")]
+        [FunctionName("ProcessADTRoutedData")]
         public static async Task RunAsync([EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
         {
             DefaultAzureCredential cred = new DefaultAzureCredential();
@@ -34,12 +34,21 @@ namespace CobotADTEventGridFunctionApp
                         twinDeviceId = "TCobot";
                         double cobotElapsedTime = (double) eventGridMessage["body"]["ElapsedTime"];
                         jsonPatchDocument.AppendReplace("/ElapsedTime", cobotElapsedTime);
+                        log.LogInformation("executed cobot " + cobotElapsedTime);
                         break;
                     default:
                         break;
                 }
                 log.LogInformation($"JsonPatchDocument: {jsonPatchDocument}");
                 await client.UpdateDigitalTwinAsync(twinDeviceId, jsonPatchDocument);
+
+                log.LogInformation($"Updating Floor...");
+
+                string twinId = eventGridEvent.Subject.ToString();
+                log.LogInformation($"TwinId: {twinId}");
+
+                string modelId = eventGridMessage["data"]["modelId"].ToString();
+                log.LogInformation($"ModelId: {modelId}");
             }
         }
     }
