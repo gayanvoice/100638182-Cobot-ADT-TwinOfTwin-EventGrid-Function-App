@@ -17,8 +17,8 @@ namespace CobotADTEventGridFunctionApp
     {
         private static readonly string adtInstanceUrl = Environment.GetEnvironmentVariable("ADT_SERVICE_URL");
 
-        [FunctionName("RunEventGridTrigger")]
-        public static void Run([EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
+        [FunctionName("ProcessADTRoutedData")]
+        public static async Task RunAsync([EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
         {
             DefaultAzureCredential cred = new DefaultAzureCredential();
             DigitalTwinsClient client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred);
@@ -31,7 +31,7 @@ namespace CobotADTEventGridFunctionApp
                 log.LogInformation("rootObject" + JsonConvert.SerializeObject(rootObject, Formatting.Indented));
 
                 Azure.JsonPatchDocument jsonPatchDocument = new Azure.JsonPatchDocument();
-                string deviceId = (string) eventGridMessage["systemProperties"]["iothub-connection-device-id"];
+                string deviceId = (string)eventGridMessage["systemProperties"]["iothub-connection-device-id"];
                 string twinDeviceId = deviceId;
                 switch (deviceId)
                 {
