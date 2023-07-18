@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CobotAdtEventGridFunctionApp", "CobotAdtEventGridFunctionApp\CobotAdtEventGridFunctionApp.csproj", "{FB56687A-4F80-4ECA-A5B7-3B5800959C11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CobotADTEventGridFunctionApp", "CobotAdtEventGridFunctionApp\CobotADTEventGridFunctionApp.csproj", "{FB56687A-4F80-4ECA-A5B7-3B5800959C11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
