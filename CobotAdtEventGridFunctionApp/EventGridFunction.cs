@@ -29,7 +29,7 @@ namespace CobotADTEventGridFunctionApp
                 switch (rootObject.Data.ModelId)
                 {
                     case "dtmi:com:Cobot:Cobot;1":
-                        jsonPatchDocument.AppendAdd("/ElapsedTime", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/ElapsedTime")).Value);
+                        jsonPatchDocument.AppendReplace("/ElapsedTime", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/ElapsedTime")).Value);
                         try
                         {
                             await digitalTwinsClient.UpdateDigitalTwinAsync("TCobot", jsonPatchDocument);
@@ -40,10 +40,10 @@ namespace CobotADTEventGridFunctionApp
                         }
                         break;
                     case "dtmi:com:Cobot:Payload;1":
-                        jsonPatchDocument.AppendAdd("/Mass", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/Mass")).Value);
-                        jsonPatchDocument.AppendAdd("/CogX", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogX")).Value);
-                        jsonPatchDocument.AppendAdd("/CogY", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogY")).Value);
-                        jsonPatchDocument.AppendAdd("/CogZ", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogZ")).Value);
+                        jsonPatchDocument.AppendReplace("/Mass", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/Mass")).Value);
+                        jsonPatchDocument.AppendReplace("/CogX", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogX")).Value);
+                        jsonPatchDocument.AppendReplace("/CogY", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogY")).Value);
+                        jsonPatchDocument.AppendReplace("/CogZ", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/CogZ")).Value);
                         await digitalTwinsClient.UpdateDigitalTwinAsync("TPayload", jsonPatchDocument);
                         break;
                     case "dtmi:com:Cobot:ControlBox;1":
