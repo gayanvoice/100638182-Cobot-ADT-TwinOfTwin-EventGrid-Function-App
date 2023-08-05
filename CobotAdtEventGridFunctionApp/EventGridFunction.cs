@@ -30,7 +30,14 @@ namespace CobotADTEventGridFunctionApp
                 {
                     case "dtmi:com:Cobot:Cobot;1":
                         jsonPatchDocument.AppendAdd("/ElapsedTime", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/ElapsedTime")).Value);
-                        await digitalTwinsClient.UpdateDigitalTwinAsync("TCobot", jsonPatchDocument);
+                        try
+                        {
+                            await digitalTwinsClient.UpdateDigitalTwinAsync("TCobot", jsonPatchDocument);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.LogInformation(ex.ToString()));
+                        }
                         break;
                     case "dtmi:com:Cobot:Payload;1":
                         jsonPatchDocument.AppendAdd("/Mass", rootObject.Data.Patch.Find(patch => patch.Path.Contains("/Mass")).Value);
