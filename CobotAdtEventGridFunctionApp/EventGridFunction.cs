@@ -36,7 +36,7 @@ namespace CobotADTEventGridFunctionApp
                         }
                         catch (Exception ex)
                         {
-                            log.LogInformation(ex.ToString()));
+                            log.LogInformation(ex.ToString());
                         }
                         break;
                     case "dtmi:com:Cobot:Payload;1":
